@@ -1,36 +1,25 @@
 name: Compilar APK
-
 on:
   push:
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Descomprimir proyecto
         run: unzip -q penguin-gp.zip
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
-      - uses: android-actions/setup-android@v3
-        with:
-          accept-android-sdk-licenses: true
-
       - name: Compilar
         working-directory: penguin-gp/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
-
       - name: Publicar APK
         env:
           GH_TOKEN: ${{ github.token }}
